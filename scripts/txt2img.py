@@ -237,6 +237,11 @@ def main():
         action='store_true',
         help="Enable this flag to run safety check for nsfw content. Slight performance hit.",
     )
+    parser.add_argument(
+        "--watermark",
+        action='store_true',
+        help="Enable this flag to add a watermark to help identify the generated imagees as machine-generated. Slight performance hit. test_watermark.py is used for this.",
+    )
     opt = parser.parse_args()
 
     if opt.laion400m:
@@ -329,7 +334,11 @@ def main():
                             for x_sample in x_checked_image_torch:
                                 x_sample = 255. * rearrange(x_sample.cpu().numpy(), 'c h w -> h w c')
                                 img = Image.fromarray(x_sample.astype(np.uint8))
-                                img = put_watermark(img, wm_encoder)
+
+                                # add invisible watermark to help viewers identify if images are machine-generated
+                                if opt.watermark:
+                                    img = put_watermark(img, wm_encoder)
+                                
                                 img.save(os.path.join(sample_path, f"{base_count:05}.png"))
                                 base_count += 1
 
@@ -345,7 +354,11 @@ def main():
                     # to image
                     grid = 255. * rearrange(grid, 'c h w -> h w c').cpu().numpy()
                     img = Image.fromarray(grid.astype(np.uint8))
-                    img = put_watermark(img, wm_encoder)
+
+                    # add invisible watermark to help viewers identify if images are machine-generated
+                    if opt.watermark:
+                        img = put_watermark(img, wm_encoder)
+                        
                     img.save(os.path.join(outpath, f'grid-{grid_count:04}.png'))
                     grid_count += 1
 
