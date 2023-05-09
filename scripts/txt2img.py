@@ -99,7 +99,7 @@ def check_safety(x_image):
     return x_checked_image, has_nsfw_concept
 
 
-def main():
+def main(settings=None):
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
@@ -251,7 +251,12 @@ def main():
         action='store_false',
         help="Enable this flag to load model weights at FULL precision. Requires 8GB+ video ram.",
     )
-    opt = parser.parse_args()
+    if settings == None:
+        opt = parser.parse_args()
+    else:
+        opt = parser.parse_args(settings)
+
+
 
     if opt.laion400m:
         print("Falling back to LAION 400M model...")
