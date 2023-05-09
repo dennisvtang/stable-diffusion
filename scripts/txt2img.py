@@ -46,7 +46,7 @@ def numpy_to_pil(images):
     return pil_images
 
 
-def load_model_from_config(config, ckpt, verbose=False):
+def load_model_from_config(config, ckpt, model_full_precision, verbose=False):
     print(f"Loading model from {ckpt}")
     pl_sd = torch.load(ckpt, map_location="cpu")
     if "global_step" in pl_sd:
@@ -61,7 +61,11 @@ def load_model_from_config(config, ckpt, verbose=False):
         print("unexpected keys:")
         print(u)
 
-    model.cuda()
+    # convert model's weights to half precision
+    if model_full_precision:
+        model.cuda().half()
+    else:
+        model.cuda()
     model.eval()
     return model
 
@@ -242,6 +246,11 @@ def main():
         action='store_true',
         help="Enable this flag to add a watermark to help identify the generated imagees as machine-generated. Slight performance hit. test_watermark.py is used for this.",
     )
+    parser.add_argument(
+        "--model_full_precision",
+        action='store_false',
+        help="Enable this flag to load model weights at FULL precision. Requires 8GB+ video ram.",
+    )
     opt = parser.parse_args()
 
     if opt.laion400m:
@@ -253,7 +262,7 @@ def main():
     seed_everything(opt.seed)
 
     config = OmegaConf.load(f"{opt.config}")
-    model = load_model_from_config(config, f"{opt.ckpt}")
+    model = load_model_from_config(config, f"{opt.ckpt}", opt.model_full_precision)
 
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     model = model.to(device)
