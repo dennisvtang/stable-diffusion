@@ -372,8 +372,9 @@ def main(settings=None):
                     # add invisible watermark to help viewers identify if images are machine-generated
                     if opt.watermark:
                         img = put_watermark(img, wm_encoder)
-                        
-                    img.save(os.path.join(outpath, f'grid-{grid_count:04}.png'))
+                    
+                    # todo add a try block around this
+                    img.save(os.path.join(outpath, f'{opt.prompt}_{opt.seed}.png'))
 
                 toc = time.time()
 
