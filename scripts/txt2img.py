@@ -317,7 +317,7 @@ def main(settings=None):
                 tic = time.time()
                 all_samples = list()
                 for n in trange(opt.n_iter, desc="Sampling"):
-                    for prompts in tqdm(data, desc="data"):
+                    for prompts in notebook.tqdm(data, desc="data", position=0, leave=True):
                         uc = None
                         if opt.scale != 1.0:
                             uc = model.get_learned_conditioning(batch_size * [""])
