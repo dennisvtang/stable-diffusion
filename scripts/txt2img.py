@@ -304,8 +304,6 @@ def main(settings=None):
     sample_path = os.path.join(outpath, "samples")
     os.makedirs(sample_path, exist_ok=True)
     base_count = len(os.listdir(sample_path))
-    grid_count = len(os.listdir(outpath)) - 1
-
     start_code = None
     if opt.fixed_code:
         start_code = torch.randn([opt.n_samples, opt.C, opt.H // opt.f, opt.W // opt.f], device=device)
@@ -375,7 +373,6 @@ def main(settings=None):
                         img = put_watermark(img, wm_encoder)
                         
                     img.save(os.path.join(outpath, f'grid-{grid_count:04}.png'))
-                    grid_count += 1
 
                 toc = time.time()
 
