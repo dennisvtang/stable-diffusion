@@ -301,9 +301,6 @@ def main(settings=None):
             data = f.read().splitlines()
             data = list(chunk(data, batch_size))
 
-    sample_path = os.path.join(outpath, "samples")
-    os.makedirs(sample_path, exist_ok=True)
-    base_count = len(os.listdir(sample_path))
     start_code = None
     if opt.fixed_code:
         start_code = torch.randn([opt.n_samples, opt.C, opt.H // opt.f, opt.W // opt.f], device=device)
@@ -344,6 +341,10 @@ def main(settings=None):
                         x_checked_image_torch = torch.from_numpy(x_checked_image).permute(0, 3, 1, 2)
 
                         if not opt.skip_save:
+                            sample_path = os.path.join(outpath, "samples")
+                            os.makedirs(sample_path, exist_ok=True)
+                            base_count = len(os.listdir(sample_path))
+
                             for x_sample in x_checked_image_torch:
                                 x_sample = 255. * rearrange(x_sample.cpu().numpy(), 'c h w -> h w c')
                                 img = Image.fromarray(x_sample.astype(np.uint8))
