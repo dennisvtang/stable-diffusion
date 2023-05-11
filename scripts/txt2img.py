@@ -4,7 +4,7 @@ import torch
 import numpy as np
 from omegaconf import OmegaConf
 from PIL import Image
-from tqdm import tqdm, trange
+from tqdm import tqdm, trange, notebook
 from imwatermark import WatermarkEncoder
 from itertools import islice
 from einops import rearrange
